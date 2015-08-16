@@ -1,45 +1,53 @@
-* {box-sizing:border-box;}
-body {background-color: #CCC;}
-
-.bgimg {
-    position:fixed;
-    top: 0;
-    left: 0;
-    width:100%;
-    z-index:-1;
-    opacity:1;
+body {
+    padding: 0 0 0 300px;
 }
 
-.greeting {
-    color:black;
-    text-shadow: 1px 1px 3px rgba(255,255,255, .5);
-    text-align: center;
+#mapCanvas {
+    display: inline-block;
+    width: 100%;
 }
 
-.wikipedia-container {
-    float:right;
-    width:290px;
-    padding:10px;
-    margin-right: 10px;
-    background-color: rgba(255,255,255,0.7);
+.navmenu {
+    padding-top: 0px;
 }
 
-.nytimes-container {
-    padding: 10px;
-    margin-right:300px;
-    background-color: rgba(255,255,255,0.7);
+.navbar {
+    padding-top: 0px;
+    display: block;
+    text-align: left;
+}
+.navbar-brand {
+    display: inline-block;
+    float: none;
+}
+.navbar-toggle {
+    position: absolute;
+    float: left;
+    margin-left: 15px;
 }
 
-.article-list {
-    margin: 0;
-    padding: 0;
+
+
+.container {
+    max-width: 100%;
 }
 
-.article {
-    list-style-type: none;
-    padding:10px;
-    border-top: 1px solid #CCC;
+.container-fluid .col-sm-12 {
+    padding: 0 0 0 0;
 }
-.article:first-child {
-    border-top:none;
+
+.scrollable-menu {
+    height: auto;
+    max-width: 200px;
+    overflow-x: hidden;
+}
+.form-control {
+    width: 290px;
+}
+.controls {
+    margin: 10px 0 0 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+
 }

@@ -2,34 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Moving Companion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nanodegree P5 Neighborhood Map</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jasny-bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-    <form id="form-container" class="form-container">
-        <label for="street">Street: </label><input type="text" id="street" value="">
-        <label for="city">City: </label><input type="text" id="city" value="">
-        <button id="submit-btn">Submit</button>
-    </form>
-
-    <hr>
-
-    <h2 id="greeting" class="greeting">Where do you want to live?</h2>
+    <div class="container-fluid">
 
 
-    <div class="wikipedia-container">
-        <h3 id="wikipedia-header">Relevant Wikipedia Links</h3>
-        <ul id="wikipedia-links">Type in an address above and find relevant Wikipedia articles here!</ul>
-    </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="infoWindow"></div>
+                    <div id="mapCanvas"></div>
+                </div>
 
+                <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
+                    <a class="navmenu-brand visible-md visible-lg" href="#">Points of Interest in Mannheim</a>
+                    <div class="nav navmenu-nav list-group scrollable-menu" data-bind="foreach: locations">
+                        <a id="item-list" class="list-group-item" href="#" data-bind="click: $root.showdata, text: $data.place.name, css: { active: $data.active }"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="nytimes-container">
-        <h3 id="nytimes-header">New York Times Articles</h3>
-        <ul id="nytimes-articles" class="article-list">What's going on in your new city? Enter an address and hit submit and the NY Times will tell you here!</div>
-    </div>
-
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
     <script src="js/libs/jquery.min.js"></script>
+    <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/libs/jasny-bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/libs/knockout-3.3.0.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
