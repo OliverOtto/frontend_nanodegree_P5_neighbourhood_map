@@ -17,7 +17,7 @@ function viewModel() {
     }
 
     // Observable knockout array where we store locations
-    locations = ko.observableArray([]);
+    locations = ko.observableArray();
 
     /** Invoke click trigger when user clicks over a location list item.
       * Also close the list if the screen is in "mobile" mode.
@@ -37,7 +37,8 @@ function viewModel() {
       * @returns nothing.
       */
     function resetActiveLocations() {
-        for (var i=0; i < locations().length; i++) {
+        var locationsLength = locations().length;
+        for (var i=0; i < locationsLength; i++) {
             locations()[i].active(false);
         }
     }
@@ -155,6 +156,48 @@ function viewModel() {
     };
 
     mapInit ();
+
+    //USING GOOGLE MAPS SEARCH FUNCTION
+    var input = $('#input')[0];
+
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var searchBox = new google.maps.places.SearchBox(input);
+
+    //event listener
+    google.maps.event.addListener(searchBox, 'places_changed', searchBoxCallback);
+    searchBox.setBounds(map.getBounds());
+
+    // callback for searchbox
+    function searchBoxCallback() {
+        // TODO NEED RESET
+        var places = searchBox.getPlaces();
+        // error check
+        if (places.length == 0) {
+            return;
+        }
+
+        // remove markers from map
+        for (var i = 0; i < locations().length; i++) {
+            locations()[i].marker.setMap(null);
+        }
+
+        // locations cleared
+        locations([]);
+
+        // map bounds and markers created
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < places.length; i++) {
+            createMarker (places[i]);
+            bounds.extend(places[i].geometry.location);
+        }
+        map.fitBounds(bounds);
+    }
+
+    // focus search results on displayed area
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+    });
+
 
 };
 
