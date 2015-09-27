@@ -172,10 +172,10 @@ function viewModel() {
     // Create markers with places returned by places service
     function placesCallback(places, status) {
         // check status and create markers
-        var placesLength = places.length;
+        //var placesLength = places.length;
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < placesLength; i++) {
-                place = places[i];
+            places.forEach(function(place){
                 var placeLatLng = place.lat + ',' + place.lng;
                 place.foursquareAddress = 'No Data from Foursquare yet';
                 place.info.setContent
@@ -201,10 +201,9 @@ function viewModel() {
                 .success(function() {
                     console.log('FourSquare update success');
                 });
-
-    });
+                createMarker (place);
                 });
-                createMarker (places[i]);
+
 
             }
         }
