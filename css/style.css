@@ -56,6 +56,15 @@ body {
         display: block !important;
     }
 }
+@media (max-width: 991px) {
+    body {
+            padding: 0 0 0 0;
+        }
+        .navmenu {
+            padding-top: 0;
+        }
+    }
+
 
 @media (min-width: 992px) {
     body {

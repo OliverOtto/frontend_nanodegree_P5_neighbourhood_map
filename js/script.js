@@ -29,7 +29,8 @@ function viewModel() {
     var Location = function (place, marker) {
         this.place = place,
         this.marker = marker,
-        this.active = ko.observable(false)
+        this.active = ko.observable(false),
+        this.visibleItem = ko.observable(true)
     }
 
     // Observable knockout array where we store locations
@@ -108,9 +109,10 @@ function viewModel() {
             location: neighborhood,
             radius: 1600
         };
-        service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(request, placesCallback);
-
+        if (locations().length === 0){
+            service = new google.maps.places.PlacesService(map);
+            service.nearbySearch(request, placesCallback);
+        }
     }
 
     // function getFoursquare{
@@ -267,49 +269,123 @@ function viewModel() {
 
     mapInit ();
 
+    // self.searchtext = ko.observable("");
+    // self.searchtext.extend({ rateLimit: {
+    //                             timeout: 400,
+    //                             method: "notifyWhenChangesStop" } });
+    // self.clearSearchText = function() {
+    //   this.searchtext('');
+    // };
+    //    /* List of leagues to filter */
+    // self.filters = ko.observableArray([]);
+    // /* Tracks whether to show message that search results returned no data. */
+    // self.emptysearch = ko.observable(false);
+
     //USING GOOGLE MAPS SEARCH FUNCTION
     var input = $('#input')[0];
-
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    var searchBox = new google.maps.places.SearchBox(input);
-
-    //event listener
-    google.maps.event.addListener(searchBox, 'places_changed', searchBoxCallback);
-    map.addListener('bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
-    });
-    //searchBox.setBounds(map.getBounds());
-
-    // callback for searchbox
-    function searchBoxCallback() {
-            // TODO NEED RESET
-            var places = searchBox.getPlaces();
-            // error check
-            if (places.length == 0) {
-                return;
-
-            // remove markers from map
-            for (var i = 0; i < locations().length; i++) {
-                locations()[i].marker.setMap(null);
+    $('#input').on('keyup',function(e){
+        var tagElems = locations;
+        // hide all tags
+        //$(tagElems).hide();
+        //resetActiveLocations();
+        var input = $('#input')[0];
+        if (input.value === ""){
+            var locationsLength = locations().length;
+            for (var i=0; i < locationsLength; i++) {
+                locations()[i].active(true);
+                locations()[i].visibleItem(true);
+                locations()[i].marker.setVisible(true);
             }
-
-            // locations cleared
-            locations([]);
-
-            // map bounds and markers created
-            var bounds = new google.maps.LatLngBounds();
-            for (var i = 0; i < places.length; i++) {
-                createMarker (places[i]);
-                bounds.extend(places[i].geometry.location);
+        } else {
+            var locationsLength = locations().length;
+            for (var i=0; i < locationsLength; i++) {
+                if (locations()[i].place.name.toLowerCase().indexOf(input.value.toLowerCase()) === -1){
+                    locations()[i].active(false);
+                    locations()[i].visibleItem(false);
+                    locations()[i].marker.setVisible(false);
+                }
+               else{
+                    locations()[i].active(true);
+                    locations()[i].visibleItem(true);
+                    locations()[i].marker.setVisible(true);
+                }
             }
-            map.fitBounds(bounds);
         }
+        // mapInit();
+        // var input = $('#input')[0];
+        // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        // //places.forEach(function(place){
 
-        // focus search results on displayed area
-        google.maps.event.addListener(map, 'bounds_changed', function() {
-            searchBox.setBounds(map.getBounds());
-        });
-    }
+        // locations().forEach( function (location){
+        //     if (location.active === true) {
+        //         createMarker(location.place);
+        //     }
+        // });
+
+        //place markers manually
+        // { // loop through all tagElements
+        //     var tag = $(tagElems).eq(i);
+
+        //     if(($(tag).text().toLowerCase()).indexOf($(this).val().toLowerCase()) === 0){
+        //     // if element's text value starts with the hint show that tag element
+        //             $(tag).show();
+        //         }
+        //     }
+    });
+
+
+    // self.searchtext = ko.observable("");
+    // self.searchtext.extend({ rateLimit: {
+    //                             timeout: 400,
+    //                             method: "notifyWhenChangesStop" } });
+    // self.clearSearchText = function() {
+    //   this.searchtext('');
+    // };
+    // /* List of leagues to filter */
+    // self.filters = ko.observableArray([]);
+    // /* Tracks whether to show message that search results returned no data. */
+    // self.emptysearch = ko.observable(false);
+    // // marker.setVisible(true);
+    // var searchBox = new google.maps.places.SearchBox(input);
+
+    // //event listener
+    // google.maps.event.addListener(searchBox, 'places_changed', searchBoxCallback);
+    // map.addListener('bounds_changed', function() {
+    //     searchBox.setBounds(map.getBounds());
+    // });
+    // //searchBox.setBounds(map.getBounds());
+
+    // // callback for searchbox
+    // function searchBoxCallback() {
+    //         // TODO NEED RESET
+    //         var places = searchBox.getPlaces();
+    //         // error check
+    //         if (places.length == 0) {
+    //             return;
+
+    //         // remove markers from map
+    //         for (var i = 0; i < locations().length; i++) {
+    //             locations()[i].marker.setMap(null);
+    //         }
+
+    //         // locations cleared
+    //         locations([]);
+
+    //         // map bounds and markers created
+    //         var bounds = new google.maps.LatLngBounds();
+    //         for (var i = 0; i < places.length; i++) {
+    //             createMarker (places[i]);
+    //             bounds.extend(places[i].geometry.location);
+    //         }
+    //         map.fitBounds(bounds);
+    //     }
+
+    //     // focus search results on displayed area
+    //     google.maps.event.addListener(map, 'bounds_changed', function() {
+    //         searchBox.setBounds(map.getBounds());
+    //     });
+    // }
 
 
 };

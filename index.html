@@ -25,7 +25,7 @@
                 <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
                     <a class="navmenu-brand visible-md visible-lg" href="#">Points of Interest in Mannheim</a>
                     <div class="nav navmenu-nav list-group scrollable-menu" data-bind="foreach: locations">
-                        <a id="item-list" class="list-group-item" href="#" data-bind="click: $root.showdata, text: $data.place.name, css: { active: $data.active }"></a>
+                        <a id="item-list" class="list-group-item" href="#" data-bind="click: $root.showdata, text: $data.place.name, css: { active: $data.active }, visible: visibleItem "></a>
                     </div>
                 </div>
             </div>
