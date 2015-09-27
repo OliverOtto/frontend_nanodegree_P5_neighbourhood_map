@@ -113,60 +113,60 @@ function viewModel() {
 
     }
 
-    function getFoursquare{
-        $.getJSON(API_ENDPOINT
-         .replace('CLIENT_ID', CLIENT_ID)
-         .replace('CLIENT_SECRET', CLIENT_SECRET)
-         , function(result, status) {
+    // function getFoursquare{
+    //     $.getJSON(API_ENDPOINT
+    //      .replace('CLIENT_ID', CLIENT_ID)
+    //      .replace('CLIENT_SECRET', CLIENT_SECRET)
+    //      , function(result, status) {
 
-        if (status !== 'success') return alert('Request to Foursquare failed');
+    //     if (status !== 'success') return alert('Request to Foursquare failed');
 
-        // Transform each venue result into a marker on the map.
-        for (var i = 0; i < result.response.venues.length; i++) {
-            var venue = result.response.venues[i];
-            var placeLoc = venue.location;
-            var image = {
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25)
-                };
-            var marker = new google.maps.Marker({
-                map: map,
-                icon: image,
-                title: venue.name,
-                position: venue.location
-            });
-            var location = new Location(place, marker);
-            locations.push(location);
+    //     // Transform each venue result into a marker on the map.
+    //     for (var i = 0; i < result.response.venues.length; i++) {
+    //         var venue = result.response.venues[i];
+    //         var placeLoc = venue.location;
+    //         var image = {
+    //                 url: place.icon,
+    //                 size: new google.maps.Size(71, 71),
+    //                 origin: new google.maps.Point(0, 0),
+    //                 anchor: new google.maps.Point(17, 34),
+    //                 scaledSize: new google.maps.Size(25, 25)
+    //             };
+    //         var marker = new google.maps.Marker({
+    //             map: map,
+    //             icon: image,
+    //             title: venue.name,
+    //             position: venue.location
+    //         });
+    //         var location = new Location(place, marker);
+    //         locations.push(location);
 
-            google.maps.event.addListener(marker, 'click', function() {
-                // var request = {
-                //     placeId: place.place_id
-                // };
-                // service.getDetails(request, callBack_createInfoWindow);
-                // infoWindow.open(map, this);
-                // resetActiveLocations();
-                // location.active(true);
-                // map.panTo(marker.position);
-            });
-        //   var venue = result.response.venues[i];
-        //   var latlng = L.latLng(venue.location.lat, venue.location.lng);
-        //   var marker = L.marker(latlng, {
-        //       icon: L.mapbox.marker.icon({
-        //         'marker-color': '#BE9A6B',
-        //         'marker-symbol': 'cafe',
-        //         'marker-size': 'large'
-        //       })
-        //     })
-        //   .bindPopup('<strong><a href="https://foursquare.com/v/' + venue.id + '">' +
-        //     venue.name + '</a></strong>')
-        //     .addTo(foursquarePlaces);
-        // }
+    //         google.maps.event.addListener(marker, 'click', function() {
+    //             // var request = {
+    //             //     placeId: place.place_id
+    //             // };
+    //             // service.getDetails(request, callBack_createInfoWindow);
+    //             // infoWindow.open(map, this);
+    //             // resetActiveLocations();
+    //             // location.active(true);
+    //             // map.panTo(marker.position);
+    //         });
+    //     //   var venue = result.response.venues[i];
+    //     //   var latlng = L.latLng(venue.location.lat, venue.location.lng);
+    //     //   var marker = L.marker(latlng, {
+    //     //       icon: L.mapbox.marker.icon({
+    //     //         'marker-color': '#BE9A6B',
+    //     //         'marker-symbol': 'cafe',
+    //     //         'marker-size': 'large'
+    //     //       })
+    //     //     })
+    //     //   .bindPopup('<strong><a href="https://foursquare.com/v/' + venue.id + '">' +
+    //     //     venue.name + '</a></strong>')
+    //     //     .addTo(foursquarePlaces);
+    //     // }
 
-        });
-    }
+    //     });
+    // }
 
 
     // Create markers with places returned by places service
@@ -177,7 +177,7 @@ function viewModel() {
             for (var i = 0; i < placesLength; i++) {
                 place = places[i];
                 var placeLatLng = place.lat + ',' + place.lng;
-                place.foursquareAddress = No Data from Foursquare yet;
+                place.foursquareAddress = 'No Data from Foursquare yet';
                 place.info.setContent
                 $.getJSON(API_ENDPOINT
                     .replace('CLIENT_ID', CLIENT_ID)
