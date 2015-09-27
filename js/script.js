@@ -16,11 +16,11 @@ function viewModel() {
     '&v=20130815' +
     '&ll=LATLON' +
     '&query=LOCNAME' +
-    '&intent=match' +
+    //'&intent=match' +
     //'&m=foursquare';
-    '&radius=1500';
+    '&radius=1500' +
     //'&ll=49.4837106,8.4622333' +
-    //'&limit=1' +
+    '&limit=1';
     //'&categoryId=4d4b7105d754a06374d81259' +
     //'&callback=?';
 
@@ -174,40 +174,41 @@ function viewModel() {
         // check status and create markers
         //var placesLength = places.length;
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-            for (var i = 0; i < placesLength; i++) {
+            //for (var i = 0; i < placesLength; i++) {
             places.forEach(function(place){
-                var placeLatLng = place.lat + ',' + place.lng;
-                place.foursquareAddress = 'No Data from Foursquare yet';
-                place.info.setContent
+                var placeLatLng = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+                place.foursquareAddress = 'No Data from Foursquare for this location available';
                 $.getJSON(API_ENDPOINT
                     .replace('CLIENT_ID', CLIENT_ID)
                     .replace('CLIENT_SECRET', CLIENT_SECRET)
                     .replace('LOCNAME', place.name)
                     .replace('LATLON', placeLatLng)
-                    , function(result, status) {
+                    , function(object, status) {
                     if (status !== 'success') return alert('Request to Foursquare failed');
-                    if (object.meta.code == '200') {
                         $.each(object.response.venues, function(i, venues) {
-                            place.fourquareAddress = venues.location.address;
+                            //place.foursquareAddress = venues.location.address;
+                            place.foursquareAddress = '<strong><a href="https://foursquare.com/v/' + venues.id + '">' +
+                            venues.name + '</a></strong>'
                             //place.info.setContent('<h3>' + place.name + '</h3>' + '<p>' +
                             //place.foursquareAddress + '</p>');
                         });
-                    }
+
                 })
                 //attach success and error handlers
                 .error(function() {
                     console.log('Foursquare update error');
                 })
                 .success(function() {
+                    createMarker (place);
                     console.log('FourSquare update success');
                 });
-                createMarker (place);
+
                 });
 
 
-            }
         }
     }
+
 
     // create single marker
     function createMarker(place) {
@@ -226,6 +227,8 @@ function viewModel() {
             title: place.name,
             position: place.geometry.location
         });
+
+        marker.foursquareAddress = place.foursquareAddress;
         var location = new Location(place, marker);
         locations.push(location);
 
@@ -233,7 +236,10 @@ function viewModel() {
             var request = {
                 placeId: place.place_id
             };
-            service.getDetails(request, callBack_createInfoWindow);
+            service.getDetails(request, function (placeDetails, status){
+                callBack_createInfoWindow(placeDetails, status, place);
+            });
+            //callBack_createInfoWindow);
             infoWindow.open(map, this);
             resetActiveLocations();
             location.active(true);
@@ -242,7 +248,7 @@ function viewModel() {
     }
 
     // get infoview
-    function callBack_createInfoWindow(place, status) {
+    function callBack_createInfoWindow(place, status, placeOrg) {
         // check status and generate html view
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             var streetviewURL = 'https://maps.googleapis.com/maps/api/streetview?size=128x128&location=' + place.geometry.location;
@@ -253,10 +259,8 @@ function viewModel() {
             if (place.formatted_phone_number) contentString += place.formatted_phone_number +'<br>';
             if (place.url) contentString += '<a href="' + place.url + '">Google+</a>';
             contentString += '<br>';
-            contentString += 'Foursquare Data' + place.foursquareAddress;
+            contentString += 'Foursquare: ' + placeOrg.foursquareAddress;
             contentString += '</div></div>';
-
-
             infoWindow.setContent(contentString);
         }
     };
@@ -271,37 +275,41 @@ function viewModel() {
 
     //event listener
     google.maps.event.addListener(searchBox, 'places_changed', searchBoxCallback);
-    searchBox.setBounds(map.getBounds());
+    map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+    });
+    //searchBox.setBounds(map.getBounds());
 
     // callback for searchbox
     function searchBoxCallback() {
-        // TODO NEED RESET
-        var places = searchBox.getPlaces();
-        // error check
-        if (places.length == 0) {
-            return;
+            // TODO NEED RESET
+            var places = searchBox.getPlaces();
+            // error check
+            if (places.length == 0) {
+                return;
 
-        // remove markers from map
-        for (var i = 0; i < locations().length; i++) {
-            locations()[i].marker.setMap(null);
+            // remove markers from map
+            for (var i = 0; i < locations().length; i++) {
+                locations()[i].marker.setMap(null);
+            }
+
+            // locations cleared
+            locations([]);
+
+            // map bounds and markers created
+            var bounds = new google.maps.LatLngBounds();
+            for (var i = 0; i < places.length; i++) {
+                createMarker (places[i]);
+                bounds.extend(places[i].geometry.location);
+            }
+            map.fitBounds(bounds);
         }
 
-        // locations cleared
-        locations([]);
-
-        // map bounds and markers created
-        var bounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < places.length; i++) {
-            createMarker (places[i]);
-            bounds.extend(places[i].geometry.location);
-        }
-        map.fitBounds(bounds);
+        // focus search results on displayed area
+        google.maps.event.addListener(map, 'bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+        });
     }
-
-    // focus search results on displayed area
-    google.maps.event.addListener(map, 'bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
-    });
 
 
 };
