@@ -16,13 +16,8 @@ function viewModel() {
     '&v=20130815' +
     '&ll=LATLON' +
     '&query=LOCNAME' +
-    //'&intent=match' +
-    //'&m=foursquare';
     '&radius=1500' +
-    //'&ll=49.4837106,8.4622333' +
     '&limit=1';
-    //'&categoryId=4d4b7105d754a06374d81259' +
-    //'&callback=?';
 
 
     // Location class that store a place and the corresponding marker in the locations array
@@ -114,62 +109,6 @@ function viewModel() {
             service.nearbySearch(request, placesCallback);
         }
     }
-
-    // function getFoursquare{
-    //     $.getJSON(API_ENDPOINT
-    //      .replace('CLIENT_ID', CLIENT_ID)
-    //      .replace('CLIENT_SECRET', CLIENT_SECRET)
-    //      , function(result, status) {
-
-    //     if (status !== 'success') return alert('Request to Foursquare failed');
-
-    //     // Transform each venue result into a marker on the map.
-    //     for (var i = 0; i < result.response.venues.length; i++) {
-    //         var venue = result.response.venues[i];
-    //         var placeLoc = venue.location;
-    //         var image = {
-    //                 url: place.icon,
-    //                 size: new google.maps.Size(71, 71),
-    //                 origin: new google.maps.Point(0, 0),
-    //                 anchor: new google.maps.Point(17, 34),
-    //                 scaledSize: new google.maps.Size(25, 25)
-    //             };
-    //         var marker = new google.maps.Marker({
-    //             map: map,
-    //             icon: image,
-    //             title: venue.name,
-    //             position: venue.location
-    //         });
-    //         var location = new Location(place, marker);
-    //         locations.push(location);
-
-    //         google.maps.event.addListener(marker, 'click', function() {
-    //             // var request = {
-    //             //     placeId: place.place_id
-    //             // };
-    //             // service.getDetails(request, callBack_createInfoWindow);
-    //             // infoWindow.open(map, this);
-    //             // resetActiveLocations();
-    //             // location.active(true);
-    //             // map.panTo(marker.position);
-    //         });
-    //     //   var venue = result.response.venues[i];
-    //     //   var latlng = L.latLng(venue.location.lat, venue.location.lng);
-    //     //   var marker = L.marker(latlng, {
-    //     //       icon: L.mapbox.marker.icon({
-    //     //         'marker-color': '#BE9A6B',
-    //     //         'marker-symbol': 'cafe',
-    //     //         'marker-size': 'large'
-    //     //       })
-    //     //     })
-    //     //   .bindPopup('<strong><a href="https://foursquare.com/v/' + venue.id + '">' +
-    //     //     venue.name + '</a></strong>')
-    //     //     .addTo(foursquarePlaces);
-    //     // }
-
-    //     });
-    // }
-
 
     // Create markers with places returned by places service
     function placesCallback(places, status) {
@@ -269,26 +208,11 @@ function viewModel() {
 
     mapInit ();
 
-    // self.searchtext = ko.observable("");
-    // self.searchtext.extend({ rateLimit: {
-    //                             timeout: 400,
-    //                             method: "notifyWhenChangesStop" } });
-    // self.clearSearchText = function() {
-    //   this.searchtext('');
-    // };
-    //    /* List of leagues to filter */
-    // self.filters = ko.observableArray([]);
-    // /* Tracks whether to show message that search results returned no data. */
-    // self.emptysearch = ko.observable(false);
-
     //USING GOOGLE MAPS SEARCH FUNCTION
     var input = $('#input')[0];
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     $('#input').on('keyup',function(e){
         var tagElems = locations;
-        // hide all tags
-        //$(tagElems).hide();
-        //resetActiveLocations();
         var input = $('#input')[0];
         if (input.value === ""){
             var locationsLength = locations().length;
@@ -312,81 +236,8 @@ function viewModel() {
                 }
             }
         }
-        // mapInit();
-        // var input = $('#input')[0];
-        // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-        // //places.forEach(function(place){
 
-        // locations().forEach( function (location){
-        //     if (location.active === true) {
-        //         createMarker(location.place);
-        //     }
-        // });
-
-        //place markers manually
-        // { // loop through all tagElements
-        //     var tag = $(tagElems).eq(i);
-
-        //     if(($(tag).text().toLowerCase()).indexOf($(this).val().toLowerCase()) === 0){
-        //     // if element's text value starts with the hint show that tag element
-        //             $(tag).show();
-        //         }
-        //     }
     });
-
-
-    // self.searchtext = ko.observable("");
-    // self.searchtext.extend({ rateLimit: {
-    //                             timeout: 400,
-    //                             method: "notifyWhenChangesStop" } });
-    // self.clearSearchText = function() {
-    //   this.searchtext('');
-    // };
-    // /* List of leagues to filter */
-    // self.filters = ko.observableArray([]);
-    // /* Tracks whether to show message that search results returned no data. */
-    // self.emptysearch = ko.observable(false);
-    // // marker.setVisible(true);
-    // var searchBox = new google.maps.places.SearchBox(input);
-
-    // //event listener
-    // google.maps.event.addListener(searchBox, 'places_changed', searchBoxCallback);
-    // map.addListener('bounds_changed', function() {
-    //     searchBox.setBounds(map.getBounds());
-    // });
-    // //searchBox.setBounds(map.getBounds());
-
-    // // callback for searchbox
-    // function searchBoxCallback() {
-    //         // TODO NEED RESET
-    //         var places = searchBox.getPlaces();
-    //         // error check
-    //         if (places.length == 0) {
-    //             return;
-
-    //         // remove markers from map
-    //         for (var i = 0; i < locations().length; i++) {
-    //             locations()[i].marker.setMap(null);
-    //         }
-
-    //         // locations cleared
-    //         locations([]);
-
-    //         // map bounds and markers created
-    //         var bounds = new google.maps.LatLngBounds();
-    //         for (var i = 0; i < places.length; i++) {
-    //             createMarker (places[i]);
-    //             bounds.extend(places[i].geometry.location);
-    //         }
-    //         map.fitBounds(bounds);
-    //     }
-
-    //     // focus search results on displayed area
-    //     google.maps.event.addListener(map, 'bounds_changed', function() {
-    //         searchBox.setBounds(map.getBounds());
-    //     });
-    // }
-
 
 };
 
