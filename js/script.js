@@ -25,11 +25,15 @@ function viewModel() {
         this.place = place,
         this.marker = marker,
         this.active = ko.observable(false),
-        this.visibleItem = ko.observable(true)
+        this.visibleItem = ko.observable(true);
     }
 
     // Observable knockout array where we store locations
     locations = ko.observableArray();
+
+    //Search Field with knockout bound to search callback
+    searchField = ko.observable();
+    searchField.subscribe(callbackSearch);
 
     /** Invoke click trigger when user clicks over a location list item.
       * Also close the list if the screen is in "mobile" mode.
@@ -40,9 +44,9 @@ function viewModel() {
     self.showdata = function (location) {
         google.maps.event.trigger(location.marker, 'click');
         if ($(".navbar").css('display') === 'block') {
-            $("#menu-button").trigger('click');
+            //$("#menu-button").trigger('click');
         }
-    }
+    };
 
     /** Reset active locations on the list to inactive state.
       *
@@ -123,28 +127,23 @@ function viewModel() {
                     .replace('CLIENT_ID', CLIENT_ID)
                     .replace('CLIENT_SECRET', CLIENT_SECRET)
                     .replace('LOCNAME', place.name)
-                    .replace('LATLON', placeLatLng)
-                    , function(object, status) {
-                    if (status !== 'success') return alert('Request to Foursquare failed');
+                    .replace('LATLON', placeLatLng),
+                    function(object, status) {
                         $.each(object.response.venues, function(i, venues) {
-                            //place.foursquareAddress = venues.location.address;
                             place.foursquareAddress = '<strong><a href="https://foursquare.com/v/' + venues.id + '">' +
-                            venues.name + '</a></strong>'
-                            //place.info.setContent('<h3>' + place.name + '</h3>' + '<p>' +
-                            //place.foursquareAddress + '</p>');
+                            venues.name + '</a></strong>';
                         });
 
                 })
                 //attach success and error handlers
                 .error(function() {
-                    console.log('Foursquare update error');
+                    alert('Request to Foursquare failed')
                 })
                 .success(function() {
                     createMarker (place);
-                    console.log('FourSquare update success');
                 });
 
-                });
+            });
 
 
         }
@@ -178,7 +177,7 @@ function viewModel() {
                 placeId: place.place_id
             };
             service.getDetails(request, function (placeDetails, status){
-                callBack_createInfoWindow(placeDetails, status, place);
+                callBackCreateInfoWindow(placeDetails, status, place);
             });
             //callBack_createInfoWindow);
             infoWindow.open(map, this);
@@ -189,7 +188,7 @@ function viewModel() {
     }
 
     // get infoview
-    function callBack_createInfoWindow(place, status, placeOrg) {
+    function callBackCreateInfoWindow(place, status, placeOrg) {
         // check status and generate html view
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             var streetviewURL = 'https://maps.googleapis.com/maps/api/streetview?size=128x128&location=' + place.geometry.location;
@@ -204,41 +203,42 @@ function viewModel() {
             contentString += '</div></div>';
             infoWindow.setContent(contentString);
         }
-    };
+    }
 
-    mapInit ();
-
-    //USING GOOGLE MAPS SEARCH FUNCTION
-    var input = $('#input')[0];
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    $('#input').on('keyup',function(e){
+    function callbackSearch(){
         var tagElems = locations;
-        var input = $('#input')[0];
-        if (input.value === ""){
+        var input = searchField();
+        if (input === ""){
             var locationsLength = locations().length;
             for (var i=0; i < locationsLength; i++) {
-                locations()[i].active(true);
+                locations()[i].active(false);
                 locations()[i].visibleItem(true);
                 locations()[i].marker.setVisible(true);
             }
         } else {
             var locationsLength = locations().length;
             for (var i=0; i < locationsLength; i++) {
-                if (locations()[i].place.name.toLowerCase().indexOf(input.value.toLowerCase()) === -1){
+                if (locations()[i].place.name.toLowerCase().indexOf(input.toLowerCase()) === -1){
                     locations()[i].active(false);
                     locations()[i].visibleItem(false);
                     locations()[i].marker.setVisible(false);
                 }
                else{
-                    locations()[i].active(true);
+                    locations()[i].active(false);
                     locations()[i].visibleItem(true);
                     locations()[i].marker.setVisible(true);
                 }
             }
         }
 
-    });
+    }
 
-};
+    mapInit ();
+
+    //USING GOOGLE MAPS SEARCH FUNCTION
+    var input = $('#input')[0];
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+}
 
 ko.applyBindings (new viewModel ());

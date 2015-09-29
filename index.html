@@ -19,7 +19,7 @@
                 </div>
 
                 <div>
-                    <input id="input" class="controls form-control" type="text" placeholder="Search">
+                    <input id="input" class="controls form-control" data-bind="value: searchField, valueUpdate: 'afterkeydown'" type="text" placeholder="Search">
                 </div>
 
                 <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
@@ -27,6 +27,15 @@
                     <div class="nav navmenu-nav list-group scrollable-menu" data-bind="foreach: locations">
                         <a id="item-list" class="list-group-item" href="#" data-bind="click: $root.showdata, text: $data.place.name, css: { active: $data.active }, visible: visibleItem "></a>
                     </div>
+                </div>
+
+                <div class="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
+                    <button id="menu-button" type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Points of Interest in Mannheim</a>
                 </div>
             </div>
         </div>
